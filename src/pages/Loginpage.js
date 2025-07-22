@@ -16,10 +16,11 @@ function LoginPage() {
       });
 
       if (response.data.success) {
-        alert("로그인 성공");
+        localStorage.setItem('userId',username);
+        alert(response.data.message);
         navigate("/mypage");
       } else {
-        alert("로그인 실패: " + response.data.message);
+        alert(response.data.message);
       }
     } catch (error) {
       console.error("로그인 오류", error);
