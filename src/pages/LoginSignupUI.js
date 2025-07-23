@@ -2,18 +2,36 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SignupPage from "./Signuppage";
 import styles from "./LoginSignupUI.module.css";
+import axios from "axios";
 
 function LoginSignupUI() {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
+  const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [showSignupModal, setShowSignupModal] = useState(false); // ✅ 추가
 
-  const handleLogin = () => {
-    console.log("로그인 시도:", username, password);
-    localStorage.setItem('userId', username);
-    navigate("/dashboard");
-  };
+ const handleLogin=async () => {
+    try {
+      const response = await axios.post('http://192.168.0.83:8081/users/login', {
+        userId,
+        password
+      });
+
+      if (response.data.success&&(response.data.code)==200) {  // 검증 강화
+        localStorage.setItem("userId",userId)
+        alert(response.data.message);
+        navigate("/dashboard");
+      }else{
+        alert("로그인 오류 발생");
+      }
+    } catch (error) {
+      if(error.response?.data?.message){
+        alert(error.response.data.message);
+      }else{
+      alert("로그인 오류 발생");
+      }
+    }
+};
 
   const handleSignupRedirect = () => {
     setShowSignupModal(true); 
@@ -35,8 +53,8 @@ function LoginSignupUI() {
           <input
             type="text"
             className="form-control"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
             placeholder="아이디"
           />
         </div>

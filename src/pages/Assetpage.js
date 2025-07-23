@@ -7,6 +7,7 @@ function AssetPage() {
     const [showAssets, setShowAssets] = useState(false);
     const [newAsset, setNewAsset] = useState({ name: "", type: "", amount: 0 });
     const userId = localStorage.getItem('userId');
+    const assetTypes = ["현금", "예금", "적금", "주식", "연금"];
 
     // 자산 조회 및 toggle
     const toggleAssets = () => {
@@ -97,9 +98,21 @@ function AssetPage() {
                                             : asset.name}
                                     </td>
                                     <td>
-                                        {isEditMode ?
-                                            <input value={asset.type} onChange={e => handleAssetChange(idx, 'type', e.target.value)} />
-                                            : asset.type}
+                                        {isEditMode ? (
+                                            <select
+                                                value={asset.type}
+                                                onChange={e => handleAssetChange(idx, 'type', e.target.value)}
+                                            >
+                                                {assetTypes.map(type => (
+                                                    <option key={type} value={type}>{type}</option>
+                                                ))}
+                                                {!assetTypes.includes(asset.type) && (
+                                                    <option value={asset.type}>{asset.type}</option>
+                                                )}
+                                            </select>
+                                        ) : (
+                                            asset.type
+                                        )}
                                     </td>
                                     <td>
                                         {isEditMode ?
@@ -117,15 +130,56 @@ function AssetPage() {
                         </tbody>
                     </table>
 
-                    {isEditMode &&
-                        <div className="mt-4">
-                            <h4>신규 자산 추가</h4>
-                            <input className="form-control mb-2" placeholder="이름" value={newAsset.name} onChange={e => setNewAsset({ ...newAsset, name: e.target.value })} />
-                            <input className="form-control mb-2" placeholder="종류" value={newAsset.type} onChange={e => setNewAsset({ ...newAsset, type: e.target.value })} />
-                            <input type="number" className="form-control mb-2" placeholder="금액" value={newAsset.amount} onChange={e => setNewAsset({ ...newAsset, amount: Number(e.target.value) })} />
-                            <button className="btn btn-primary" onClick={addAsset}>자산 추가</button>
-                        </div>
-                    }
+               {isEditMode &&
+  <div className="mt-4">
+    <h4>신규 자산 추가</h4>
+
+    <input
+      className="form-control mb-2"
+      placeholder="이름"
+      value={newAsset.name}
+      onChange={e => setNewAsset({ ...newAsset, name: e.target.value })}
+    />
+
+    {/* Select + Input 동시 제공 */}
+    <div className="mb-2">
+      <label className="form-label">자산 종류 (선택 또는 직접 입력)</label>
+      <div className="d-flex gap-2">
+        <select
+          className="form-select"
+          value={assetTypes.includes(newAsset.type) ? newAsset.type : ""}
+          onChange={e => {
+            const selected = e.target.value;
+            setNewAsset({ ...newAsset, type: selected });
+          }}
+        >
+          <option value="">-- 자산 종류 선택 --</option>
+          {assetTypes.map(type => (
+            <option key={type} value={type}>{type}</option>
+          ))}
+        </select>
+
+        <input
+          type="text"
+          className="form-control"
+          placeholder="직접 입력"
+          value={newAsset.type}
+          onChange={e => setNewAsset({ ...newAsset, type: e.target.value })}
+        />
+      </div>
+    </div>
+
+    <input
+      type="number"
+      className="form-control mb-2"
+      placeholder="금액"
+      value={newAsset.amount}
+      onChange={e => setNewAsset({ ...newAsset, amount: Number(e.target.value) })}
+    />
+
+    <button className="btn btn-primary" onClick={addAsset}>자산 추가</button>
+  </div>
+}
                 </>
             }
         </div>

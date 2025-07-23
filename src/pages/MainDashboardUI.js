@@ -47,9 +47,9 @@ function MainDashboardUI() {
         </h1>
 
         <div className="dashboard-buttons w-100 d-flex flex-column align-items-center">
-          <Button className="btn btn-outline-dark mb-3 w-50" onClick={() => setActiveModal("budget")}>예산 관리</Button>
+          <Button className="btn btn-outline-dark mb-3 w-50" onClick={() => setActiveModal("budget")}>월 예산 관리</Button>
           <Button className="btn btn-outline-dark mb-3 w-50" onClick={() => setActiveModal("asset")}>자산 관리</Button>
-          <Button className="btn btn-outline-dark mb-3 w-50" onClick={() => setActiveModal("expense")}>소비 내역</Button>
+          <Button className="btn btn-outline-dark mb-3 w-50" onClick={() => setActiveModal("expense")}>소비내역 관리</Button>
           <Button className="btn btn-outline-dark mb-5 w-50" onClick={() => setActiveModal("myinfo")}>내 정보</Button>
         </div>
 
