@@ -18,7 +18,7 @@ function LoginPage() {
       if (response.data.success) {
         localStorage.setItem('userId',username);
         alert(response.data.message);
-        navigate("/mypage");
+        navigate("/dashboard");
       } else {
         alert(response.data.message);
       }

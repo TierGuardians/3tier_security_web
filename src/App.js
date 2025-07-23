@@ -1,27 +1,33 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import Loginpage from "./pages/Loginpage";
-import Mypage from "./pages/Mypage";
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import LoginSignupUI from "./pages/LoginSignupUI";
+import LoginPage from "./pages/Loginpage";
 import SignupPage from "./pages/Signuppage";
-import Myinfopage from "./pages/Myinfopage";
+import MainDashboardUI from "./pages/MainDashboardUI";
 import AssetPage from "./pages/Assetpage";
+import BudgetPage from "./pages/Budgetpage";
+import ExpensePage from "./pages/Expensepage";
+import MyinfoPage from "./pages/Myinfopage";
 
 
 function App() {
   return (
-    <Router>
-      <nav>
-        <Link to="/">로그인</Link> |<Link to="/mypage">마이페이지</Link>|<Link to="/signup">회원가입</Link>|<Link to="/myinfo">사용자 정보</Link>|<Link to="/asset">자산</Link>
-      </nav>
-      <Routes>
-        <Route path="/" element={<Loginpage />} />
-        <Route path="/mypage" element={<Mypage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/myinfo" element={<Myinfopage />} />
-        <Route path="/asset" element={<AssetPage />} />
-      </Routes>
-    </Router>
+<Router>
+  <Routes>
+  <Route path="/" element={<LoginSignupUI />} />
+  <Route path="/login" element={<LoginPage />} />
+  <Route path="/signup" element={<SignupPage />} />
+  <Route path="/budget" element={<BudgetPage />} />
+  <Route path="/asset" element={<AssetPage />} />
+  <Route path="/expense" element={<ExpensePage />} />
+  <Route path="/myinfo" element={<MyinfoPage />} />
+  <Route path="/dashboard" element={<MainDashboardUI />} />
+  </Routes>
+</Router>
   );
 }
 
-export default App;
+export default App; 
+
+
+
