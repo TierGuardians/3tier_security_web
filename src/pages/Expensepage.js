@@ -12,9 +12,14 @@ function ExpensePage() {
         spentAt: ""
     });
 
+    const categoryTypes = [
+        "월세/관리비", "통신비", "보험료",
+        "식비", "교통비", "쇼핑",
+        "의료/약", "문화/여가", "구독서비스"
+    ];
+
     const userId = localStorage.getItem('userId');
 
-    // 소비 조회 toggle
     const toggleExpenses = () => {
         if (!showExpenses) {
             axios.get(`http://192.168.0.83:8081/expenses?userId=${userId}`)
@@ -30,9 +35,7 @@ function ExpensePage() {
         }
     };
 
-    const enableEditMode = () => {
-        setIsEditMode(true);
-    };
+    const enableEditMode = () => setIsEditMode(true);
 
     const handleExpenseChange = (index, field, value) => {
         const updated = [...expenses];
@@ -99,30 +102,56 @@ function ExpensePage() {
                         <tbody>
                             {expenses.map((expense, idx) => (
                                 <tr key={expense.id}>
+                                    {/* ✅ 카테고리 */}
                                     <td>
-                                        {isEditMode ?
-                                            <input value={expense.category} onChange={e => handleExpenseChange(idx, 'category', e.target.value)} />
-                                            : expense.category}
+                                        <select
+                                            className="form-select"
+                                            value={expense.category}
+                                            onChange={e => handleExpenseChange(idx, 'category', e.target.value)}
+                                        >
+                                            <option value="">-- 카테고리 선택 --</option>
+                                            {categoryTypes.map(cat => (
+                                                <option key={cat} value={cat}>{cat}</option>
+                                            ))}
+                                        </select>
                                     </td>
+
+                                    {/* ✅ 설명 */}
                                     <td>
-                                        {isEditMode ?
-                                            <input value={expense.description} onChange={e => handleExpenseChange(idx, 'description', e.target.value)} />
-                                            : expense.description}
+                                        <input
+                                            value={expense.description}
+                                            onChange={e => handleExpenseChange(idx, 'description', e.target.value)}
+                                            className="form-control"
+                                        />
                                     </td>
+
+                                    {/* ✅ 금액 */}
                                     <td>
-                                        {isEditMode ?
-                                            <input type="number" value={expense.amount} onChange={e => handleExpenseChange(idx, 'amount', e.target.value)} />
-                                            : expense.amount.toLocaleString()}
+                                        <input
+                                            type="number"
+                                            value={expense.amount}
+                                            onChange={e => handleExpenseChange(idx, 'amount', e.target.value)}
+                                            className="form-control"
+                                        />
                                     </td>
+
+                                    {/* ✅ 사용일 */}
                                     <td>
-                                        {isEditMode ?
-                                            <input type="date" value={expense.spentAt} onChange={e => handleExpenseChange(idx, 'spentAt', e.target.value)} />
-                                            : expense.spentAt}
+                                        <input
+                                            type="date"
+                                            value={expense.spentAt}
+                                            onChange={e => handleExpenseChange(idx, 'spentAt', e.target.value)}
+                                            className="form-control"
+                                        />
                                     </td>
+
+                                    {/* ✅ 동작 버튼 */}
                                     {isEditMode &&
                                         <td>
-                                            <button className="btn btn-sm btn-success me-1" onClick={() => saveExpenseChanges(expense.id, expense)}>저장</button>
-                                            <button className="btn btn-sm btn-danger" onClick={() => handleDelete(expense.id)}>삭제</button>
+                                            <div className="d-flex gap-2">
+                                                <button className="btn btn-sm btn-success" onClick={() => saveExpenseChanges(expense.id, expense)}>저장</button>
+                                                <button className="btn btn-sm btn-danger" onClick={() => handleDelete(expense.id)}>삭제</button>
+                                            </div>
                                         </td>
                                     }
                                 </tr>
@@ -133,10 +162,59 @@ function ExpensePage() {
                     {isEditMode &&
                         <div className="mt-4">
                             <h4>신규 소비 추가</h4>
-                            <input className="form-control mb-2" placeholder="카테고리" value={newExpense.category} onChange={e => setNewExpense({ ...newExpense, category: e.target.value })} />
-                            <input className="form-control mb-2" placeholder="설명" value={newExpense.description} onChange={e => setNewExpense({ ...newExpense, description: e.target.value })} />
-                            <input type="number" className="form-control mb-2" placeholder="금액" value={newExpense.amount} onChange={e => setNewExpense({ ...newExpense, amount: Number(e.target.value) })} />
-                            <input type="date" className="form-control mb-2" placeholder="사용일" value={newExpense.spentAt} onChange={e => setNewExpense({ ...newExpense, spentAt: e.target.value })} />
+
+                            <div className="mb-2">
+                                <label className="form-label">카테고리 (선택 또는 직접 입력)</label>
+                                <div className="d-flex gap-2">
+                                    <select
+                                        className="form-select"
+                                        value={categoryTypes.includes(newExpense.category) ? newExpense.category : ""}
+                                        onChange={e => setNewExpense({ ...newExpense, category: e.target.value })}
+                                    >
+                                        <option value="">-- 소비 카테고리 선택 --</option>
+                                        {categoryTypes.map(cat => (
+                                            <option key={cat} value={cat}>{cat}</option>
+                                        ))}
+                                    </select>
+
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="직접 입력"
+                                        value={newExpense.category}
+                                        onChange={e => setNewExpense({ ...newExpense, category: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+
+                            <input
+                                className="form-control mb-2"
+                                placeholder="설명"
+                                value={newExpense.description}
+                                onChange={e => setNewExpense({ ...newExpense, description: e.target.value })}
+                            />
+                            <input
+                                type="number"
+                                className="form-control mb-2"
+                                placeholder="금액"
+                                value={newExpense.amount === 0 ? "" : newExpense.amount}
+                                onFocus={() => {
+                                    if (newExpense.amount === 0) {
+                                        setNewExpense({ ...newExpense, amount: "" });
+                                    }
+                                }}
+                                onChange={e => {
+                                    const val = e.target.value;
+                                    setNewExpense({ ...newExpense, amount: val === "" ? 0 : Number(val) });
+                                }}
+                            />
+                            <input
+                                type="date"
+                                className="form-control mb-2"
+                                placeholder="사용일"
+                                value={newExpense.spentAt}
+                                onChange={e => setNewExpense({ ...newExpense, spentAt: e.target.value })}
+                            />
                             <button className="btn btn-primary" onClick={addExpense}>소비 추가</button>
                         </div>
                     }

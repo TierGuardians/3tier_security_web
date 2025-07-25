@@ -114,8 +114,21 @@ function BudgetPage() {
                         <div className="mt-4">
                             <h4>신규 예산 추가</h4>
                             <input className="form-control mb-2" placeholder="월 (예: 2025-08)" value={newBudget.month} onChange={e => setNewBudget({ ...newBudget, month: e.target.value })} />
-                            <input type="number" className="form-control mb-2" placeholder="금액" value={newBudget.amount} onChange={e => setNewBudget({ ...newBudget, amount: Number(e.target.value) })} />
-                            <button className="btn btn-primary" onClick={addBudget}>예산 추가</button>
+                            <input
+                                type="number"
+                                className="form-control mb-2"
+                                placeholder="금액"
+                                value={newBudget.amount === 0 ? "" : newBudget.amount}
+                                onFocus={() => {
+                                    if (newBudget.amount === 0) {
+                                        setNewBudget({ ...newBudget, amount: "" });
+                                    }
+                                }}
+                                onChange={e => {
+                                    const val = e.target.value;
+                                    setNewBudget({ ...newBudget, amount: val === "" ? 0 : Number(val) });
+                                }}
+                            />                            <button className="btn btn-primary" onClick={addBudget}>예산 추가</button>
                         </div>
                     }
                 </>

@@ -7,13 +7,13 @@ function Myinfo() {
     const userId = localStorage.getItem('userId');
 
     useEffect(() => {
-        if (!userId) return; 
+        if (!userId) return;
 
         axios.get(`http://192.168.0.83:8081/users/mypage/${userId}`)
             .then(response => {
                 console.log("내 정보 조회 응답:", response.data);
                 const { user } = response.data.data;
-                
+
                 setUserInfo(user);
             })
             .catch(error => {
@@ -31,7 +31,7 @@ function Myinfo() {
                     <h5 className="card-title">{userInfo?.name}</h5>
                     <p className="card-text">아이디: {userInfo.userId}</p>
                     <p className="card-text">이메일: {userInfo.email}</p>
-                    <p className="card-text">가입일: {userInfo.createdAt}</p>
+                    <p className="card-text">가입일: {userInfo.createdAt?.split("T")[0]}</p>
                 </div>
             </div>
         </div>

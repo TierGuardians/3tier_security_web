@@ -11,21 +11,21 @@ import MyinfoPage from "./pages/Myinfopage";
 
 function App() {
   return (
-<Router>
-  <Routes>
-  <Route path="/" element={<LoginSignupUI />} />
-  <Route path="/signup" element={<SignupPage />} />
-  <Route path="/budget" element={<BudgetPage />} />
-  <Route path="/asset" element={<AssetPage />} />
-  <Route path="/expense" element={<ExpensePage />} />
-  <Route path="/myinfo" element={<MyinfoPage />} />
-  <Route path="/dashboard" element={<MainDashboardUI />} />
-  </Routes>
-</Router>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LoginSignupUI />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/budget" element={<BudgetPage />} />
+        <Route path="/asset" element={<AssetPage />} />
+        <Route path="/expense" element={<ExpensePage />} />
+        <Route path="/myinfo" element={<MyinfoPage />} />
+        <Route path="/dashboard" element={<MainDashboardUI />} />
+      </Routes>
+    </Router>
   );
 }
 
-export default App; 
+export default App;
 
 
 

@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+// MainDashboardUI.js + 간단한 소비 내역 그래프 시각화 추가
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Container, Button } from "react-bootstrap";
+import { Container, Button, Card } from "react-bootstrap";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import styles from "./MainDashboardUI.module.css";
 
-// 필요한 컴포넌트 import
 import BudgetPage from "./Budgetpage";
 import AssetPage from "./Assetpage";
 import ExpensePage from "./Expensepage";
@@ -12,7 +13,8 @@ import MyinfoPage from "./Myinfopage";
 
 function MainDashboardUI() {
   const navigate = useNavigate();
-  const [activeModal, setActiveModal] = useState(null); // 'budget' | 'asset' | 'expense' | 'myinfo' | null
+  const [activeModal, setActiveModal] = useState(null);
+  const [expenseSummary, setExpenseSummary] = useState([]);
 
   const handleLogout = () => {
     localStorage.removeItem("userId");
@@ -38,27 +40,51 @@ function MainDashboardUI() {
     }
   };
 
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      fetch(`http://192.168.0.83:8081/expenses/summary?userId=${userId}`)
+        .then(res => res.json())
+        .then(data => setExpenseSummary(data.data || []))
+        .catch(err => console.error("소비 요약 조회 실패:", err));
+    }
+  }, []);
+
   return (
-    <>
-      <Container className="main-container d-flex flex-column align-items-center justify-content-center vh-100">
-        <h1 className="dashboard-title">
-          <i className="bi bi-graph-up-arrow me-2 text-danger"></i>
-          개인 금융 관리 시스템
+    <div className={styles.fullBackground}>
+      <Card className={`shadow-lg text-center ${styles.dashboardCard}`}>
+        <h1 className="mb-3">
+          <i className="bi bi-graph-up-arrow text-danger me-2"></i>
+          <span className={styles.title}>개인 금융 관리 시스템</span>
         </h1>
 
-        <div className="dashboard-buttons w-100 d-flex flex-column align-items-center">
-          <Button className="btn btn-outline-dark mb-3 w-50" onClick={() => setActiveModal("budget")}>월 예산 관리</Button>
-          <Button className="btn btn-outline-dark mb-3 w-50" onClick={() => setActiveModal("asset")}>자산 관리</Button>
-          <Button className="btn btn-outline-dark mb-3 w-50" onClick={() => setActiveModal("expense")}>소비내역 관리</Button>
-          <Button className="btn btn-outline-dark mb-5 w-50" onClick={() => setActiveModal("myinfo")}>내 정보</Button>
+        <p className="text-muted mb-4">예산, 자산, 소비 내역을 한눈에 관리하세요.</p>
+
+        {expenseSummary.length > 0 && (
+          <div style={{ width: "100%", height: 240 }} className="mb-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={expenseSummary} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="category" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="total" fill="#1976d2" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+
+        <div className="d-grid gap-3">
+          <Button className={styles.menuButton} onClick={() => setActiveModal("budget")}>월 예산 관리</Button>
+          <Button className={styles.menuButton} onClick={() => setActiveModal("asset")}>자산 관리</Button>
+          <Button className={styles.menuButton} onClick={() => setActiveModal("expense")}>소비내역 관리</Button>
+          <Button className={styles.menuButton} onClick={() => setActiveModal("myinfo")}>내 정보</Button>
         </div>
 
-        <div className="logout-container text-end w-100 pe-5">
-          <Button variant="link" className="text-muted logout-link" onClick={handleLogout}>
-            로그아웃
-          </Button>
+        <div className="mt-4 text-end">
+          <Button variant="link" className="text-muted" onClick={handleLogout}>로그아웃</Button>
         </div>
-      </Container>
+      </Card>
 
       {activeModal && (
         <div className={styles.modalOverlay}>
@@ -68,7 +94,7 @@ function MainDashboardUI() {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
 

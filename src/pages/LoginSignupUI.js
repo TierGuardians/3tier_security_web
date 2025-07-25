@@ -8,37 +8,37 @@ function LoginSignupUI() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
-  const [showSignupModal, setShowSignupModal] = useState(false); // ✅ 추가
+  const [showSignupModal, setShowSignupModal] = useState(false);
 
- const handleLogin=async () => {
+  const handleLogin = async () => {
     try {
       const response = await axios.post('http://192.168.0.83:8081/users/login', {
         userId,
         password
       });
 
-      if (response.data.success&&(response.data.code)==200) {  // 검증 강화
-        localStorage.setItem("userId",userId)
+      if (response.data.success && (response.data.code) == 200) {  // 검증 강화
+        localStorage.setItem("userId", userId)
         alert(response.data.message);
         navigate("/dashboard");
-      }else{
+      } else {
         alert("로그인 오류 발생");
       }
     } catch (error) {
-      if(error.response?.data?.message){
+      if (error.response?.data?.message) {
         alert(error.response.data.message);
-      }else{
-      alert("로그인 오류 발생");
+      } else {
+        alert("로그인 오류 발생");
       }
     }
-};
+  };
 
   const handleSignupRedirect = () => {
-    setShowSignupModal(true); 
+    setShowSignupModal(true);
   };
 
   const closeModal = () => {
-    setShowSignupModal(false); 
+    setShowSignupModal(false);
   };
 
   return (
@@ -78,7 +78,7 @@ function LoginSignupUI() {
         </button>
         <button
           className={`btn btn-secondary w-100 ${styles["btn-signup"]}`}
-          onClick={handleSignupRedirect} 
+          onClick={handleSignupRedirect}
         >
           회원가입
         </button>
