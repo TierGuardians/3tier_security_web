@@ -11,13 +11,17 @@ import AssetPage from "./Assetpage";
 import ExpensePage from "./Expensepage";
 import MyinfoPage from "./Myinfopage";
 
+import axios from "../pages/axiosConfig";
+
+
 function MainDashboardUI() {
   const navigate = useNavigate();
   const [activeModal, setActiveModal] = useState(null);
   const [expenseSummary, setExpenseSummary] = useState([]);
 
   const handleLogout = () => {
-    localStorage.removeItem("userId");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
     navigate("/");
   };
 
@@ -41,13 +45,17 @@ function MainDashboardUI() {
   };
 
   useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    if (userId) {
-      fetch(`http://192.168.0.83:8081/expenses/summary?userId=${userId}`)
-        .then(res => res.json())
-        .then(data => setExpenseSummary(data.data || []))
-        .catch(err => console.error("소비 요약 조회 실패:", err));
-    }
+    axios.get("/expenses/summary")
+      .then(res => {
+        setExpenseSummary(res.data.data || []);
+      })
+      .catch(err => {
+        console.error("소비 요약 조회 실패:", err);
+        if (err.response?.status === 401) {
+          alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+          handleLogout();
+        }
+      });
   }, []);
 
   return (

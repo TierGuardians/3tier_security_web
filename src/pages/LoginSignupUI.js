@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SignupPage from "./Signuppage";
 import styles from "./LoginSignupUI.module.css";
-import axios from "axios";
+import axios from "../pages/axiosConfig";
 
 function LoginSignupUI() {
   const navigate = useNavigate();
@@ -12,23 +12,27 @@ function LoginSignupUI() {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://192.168.0.83:8081/users/login', {
+      const response = await axios.post("/users/login", {
         userId,
-        password
+        password,
       });
 
-      if (response.data.success && (response.data.code) == 200) {  // 검증 강화
-        localStorage.setItem("userId", userId)
-        alert(response.data.message);
-        navigate("/dashboard");
+      const { success, code, message, data } = response.data;
+
+      if (success && code === 200 && data?.accessToken && data?.refreshToken) {
+        localStorage.setItem("accessToken", data.accessToken);
+        localStorage.setItem("refreshToken", data.refreshToken);
+
+        alert(message || "로그인 성공");
+        navigate("/dashboard"); // 이후 MainDashboardUI로 이동
       } else {
-        alert("로그인 오류 발생");
+        alert("로그인 응답이 올바르지 않습니다.");
       }
     } catch (error) {
       if (error.response?.data?.message) {
         alert(error.response.data.message);
       } else {
-        alert("로그인 오류 발생");
+        alert("로그인 중 오류 발생");
       }
     }
   };
