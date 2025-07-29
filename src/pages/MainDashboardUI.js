@@ -11,7 +11,7 @@ import AssetPage from "./Assetpage";
 import ExpensePage from "./Expensepage";
 import MyinfoPage from "./Myinfopage";
 
-import axios from "../pages/axiosConfig";
+import axios from "../config/axiosConfig";
 
 
 function MainDashboardUI() {
@@ -20,8 +20,8 @@ function MainDashboardUI() {
   const [expenseSummary, setExpenseSummary] = useState([]);
 
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
+    sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("refreshToken");
     navigate("/");
   };
 

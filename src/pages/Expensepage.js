@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import axios from "../pages/axiosConfig"; // 🔥 인터셉터 설정된 axios
+import axios from "../config/axiosConfig"; // 🔥 인터셉터 설정된 axios
+import DOMPurify from 'dompurify';
 
 function ExpensePage() {
   const [expenses, setExpenses] = useState([]);

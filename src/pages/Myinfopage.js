@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "../pages/axiosConfig"; 
+import axios from "../config/axiosConfig"; 
 
 function Myinfo() {
   const [userInfo, setUserInfo] = useState(null);

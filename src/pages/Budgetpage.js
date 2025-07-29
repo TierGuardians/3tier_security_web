@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "../pages/axiosConfig"; // ✅ JWT 인증 인터셉터 적용된 axios 사용
+import axios from "../config/axiosConfig"; // ✅ JWT 인증 인터셉터 적용된 axios 사용
 
 function BudgetPage() {
   const [budgets, setBudgets] = useState([]);

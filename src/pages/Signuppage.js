@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from '../pages/axiosConfig'; // ✅ 전역 설정된 axios 사용
+import axios from '../config/axiosConfig'; 
 import { useNavigate } from 'react-router-dom';
 
 function SignupPage() {

@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import axios from "../pages/axiosConfig"; // 인터셉터 axios 사용
+import axios from "../config/axiosConfig"; // 인터셉터 axios 사용
+import { assetTypes } from "../config/assetTypes";
+import DOMPurify from "dompurify";
+
 
 function AssetPage() {
   const [assets, setAssets] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const [showAssets, setShowAssets] = useState(false);
   const [newAsset, setNewAsset] = useState({ name: "", type: "", amount: 0 });
-
-  const assetTypes = ["현금", "예금", "적금", "주식", "연금"];
 
   const toggleAssets = () => {
     if (!showAssets) {

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SignupPage from "./Signuppage";
 import styles from "./LoginSignupUI.module.css";
-import axios from "../pages/axiosConfig";
+import axios from "../config/axiosConfig";
 
 function LoginSignupUI() {
   const navigate = useNavigate();
@@ -20,8 +20,8 @@ function LoginSignupUI() {
       const { success, code, message, data } = response.data;
 
       if (success && code === 200 && data?.accessToken && data?.refreshToken) {
-        localStorage.setItem("accessToken", data.accessToken);
-        localStorage.setItem("refreshToken", data.refreshToken);
+        sessionStorage.setItem("accessToken", data.accessToken);
+        sessionStorage.setItem("refreshToken", data.refreshToken);
 
         alert(message || "로그인 성공");
         navigate("/dashboard"); // 이후 MainDashboardUI로 이동
