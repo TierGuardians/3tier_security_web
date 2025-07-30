@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SignupPage from "./Signuppage";
 import styles from "./LoginSignupUI.module.css";
 import axios from "../config/axiosConfig";
+import DOMPurify from 'dompurify';
+
 
 function LoginSignupUI() {
   const navigate = useNavigate();
@@ -10,21 +12,41 @@ function LoginSignupUI() {
   const [password, setPassword] = useState("");
   const [showSignupModal, setShowSignupModal] = useState(false);
 
-  const handleLogin = async () => {
+  useEffect(() => {
+    const fetchCsrfToken = async () => {
+      try {
+        const response = await axios.get("/users/csrf");
+        console.log("CSRF 응답 헤더:", response.headers);
+        const tokenFromHeader = response.headers["x-csrf-token"];
+        if (tokenFromHeader) {
+          sessionStorage.setItem("csrfToken", tokenFromHeader);
+        }
+      } catch (err) {
+        console.error("CSRF 토큰 요청 실패", err);
+      }
+    };
+    fetchCsrfToken();
+  }, []);
+
+
+   const handleLogin = async () => {
+    // ✅ 로그인 요청 전 sanitize
+    const cleanUserId = DOMPurify.sanitize(userId);
+    const cleanPassword = DOMPurify.sanitize(password);
+
     try {
+      console.log("로그인 응답:");
       const response = await axios.post("/users/login", {
-        userId,
-        password,
-      });
+        userId: cleanUserId,
+        password: cleanPassword,
+      }); 
+      console.log("로그인 응답:", response);
 
       const { success, code, message, data } = response.data;
 
       if (success && code === 200 && data?.accessToken && data?.refreshToken) {
-        sessionStorage.setItem("accessToken", data.accessToken);
-        sessionStorage.setItem("refreshToken", data.refreshToken);
-
         alert(message || "로그인 성공");
-        navigate("/dashboard"); // 이후 MainDashboardUI로 이동
+        navigate("/dashboard");
       } else {
         alert("로그인 응답이 올바르지 않습니다.");
       }

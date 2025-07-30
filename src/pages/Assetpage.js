@@ -33,15 +33,19 @@ function AssetPage() {
     setAssets(updated);
   };
 
-  const saveAssetChanges = (id, asset) => {
-    axios.put(`/assets/${id}`, {
-      name: asset.name,
-      type: asset.type,
+const saveAssetChanges = (id, asset) => {
+    const sanitized = {
+      name: DOMPurify.sanitize(asset.name),
+      type: DOMPurify.sanitize(asset.type),
       amount: asset.amount
-    }).then(() => {
-      alert("수정 완료");
-      toggleAssets();
-    }).catch(err => console.error("수정 실패:", err));
+    };
+
+    axios.put(`/assets/${id}`, sanitized)
+      .then(() => {
+        alert("수정 완료");
+        toggleAssets();
+      })
+      .catch(err => console.error("수정 실패:", err));
   };
 
   const handleDelete = (id) => {
@@ -52,15 +56,19 @@ function AssetPage() {
       }).catch(err => console.error("삭제 실패:", err));
   };
 
-  const addAsset = () => {
-    axios.post("/assets", {
-      ...newAsset
-      // ✅ userId는 더 이상 포함하지 않음
-    }).then(() => {
-      alert("추가 완료");
-      setNewAsset({ name: "", type: "", amount: 0 });
-      toggleAssets();
-    }).catch(err => console.error("추가 실패:", err));
+ const addAsset = () => {
+    const sanitized = {
+      name: DOMPurify.sanitize(newAsset.name),
+      type: DOMPurify.sanitize(newAsset.type),
+      amount: newAsset.amount
+    };
+
+    axios.post("/assets", sanitized)
+      .then(() => {
+        alert("추가 완료");
+        setNewAsset({ name: "", type: "", amount: 0 });
+        toggleAssets();
+      }).catch(err => console.error("추가 실패:", err));
   };
 
   return (

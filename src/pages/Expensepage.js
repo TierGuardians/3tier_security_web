@@ -38,16 +38,21 @@ function ExpensePage() {
 
   const handleExpenseChange = (index, field, value) => {
     const updated = [...expenses];
-    updated[index][field] = field === 'amount' ? Number(value) : value;
+    if (field === 'amount') {
+      updated[index][field] = Number(value);
+    } else {
+      updated[index][field] = DOMPurify.sanitize(value);
+    }
     setExpenses(updated);
   };
 
+
   const saveExpenseChanges = (id, expense) => {
     axios.put(`/expenses/${id}`, {
-      category: expense.category,
-      description: expense.description,
+      category: DOMPurify.sanitize(expense.category),
+      description: DOMPurify.sanitize(expense.description),
       amount: expense.amount,
-      spentAt: expense.spentAt
+      spentAt: DOMPurify.sanitize(expense.spentAt)
     }).then(() => {
       alert("수정 완료");
       toggleExpenses();
@@ -64,8 +69,10 @@ function ExpensePage() {
 
   const addExpense = () => {
     axios.post('/expenses', {
-      ...newExpense
-      // 🔥 userId는 이제 JWT에서 서버가 추출하므로 body에 포함하지 않음
+      category: DOMPurify.sanitize(newExpense.category),
+      description: DOMPurify.sanitize(newExpense.description),
+      amount: newExpense.amount,
+      spentAt: DOMPurify.sanitize(newExpense.spentAt)
     }).then(() => {
       alert("소비 내역 추가 완료");
       setNewExpense({ category: "", description: "", amount: 0, spentAt: "" });

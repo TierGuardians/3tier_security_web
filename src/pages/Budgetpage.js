@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import axios from "../config/axiosConfig"; // ✅ JWT 인증 인터셉터 적용된 axios 사용
+import DOMPurify from "dompurify";
+
 
 function BudgetPage() {
   const [budgets, setBudgets] = useState([]);
@@ -24,15 +26,15 @@ function BudgetPage() {
 
   const enableEditMode = () => setIsEditMode(true);
 
-  const handleBudgetChange = (index, field, value) => {
+   const handleBudgetChange = (index, field, value) => {
     const updated = [...budgets];
-    updated[index][field] = field === 'amount' ? Number(value) : value;
+    updated[index][field] = field === 'amount' ? Number(value) : DOMPurify.sanitize(value); // ⛑️ sanitize
     setBudgets(updated);
   };
 
   const saveBudgetChanges = (id, budget) => {
     axios.put(`/budgets/${id}`, {
-      month: budget.month,
+      month: DOMPurify.sanitize(budget.month), 
       amount: budget.amount
     }).then(() => {
       alert("수정 완료");
@@ -50,8 +52,8 @@ function BudgetPage() {
 
   const addBudget = () => {
     axios.post("/budgets", {
-      ...newBudget
-      // ✅ userId 생략 (JWT로 인증되므로)
+      month: DOMPurify.sanitize(newBudget.month), 
+      amount: newBudget.amount
     }).then(() => {
       alert("예산 추가 완료");
       setNewBudget({ month: "", amount: 0 });

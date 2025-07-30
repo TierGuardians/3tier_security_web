@@ -12,6 +12,8 @@ import ExpensePage from "./Expensepage";
 import MyinfoPage from "./Myinfopage";
 
 import axios from "../config/axiosConfig";
+import DOMPurify from 'dompurify';
+
 
 
 function MainDashboardUI() {
@@ -19,11 +21,16 @@ function MainDashboardUI() {
   const [activeModal, setActiveModal] = useState(null);
   const [expenseSummary, setExpenseSummary] = useState([]);
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("accessToken");
-    sessionStorage.removeItem("refreshToken");
+const handleLogout = async () => {
+  try {
+    await axios.post("/users/logout"); // ✅ 로그아웃 요청
+    sessionStorage.removeItem("csrfToken"); // CSRF 토큰도 정리
     navigate("/");
-  };
+  } catch (error) {
+    console.error("로그아웃 실패:", error);
+    alert("로그아웃에 실패했습니다.");
+  }
+};
 
   const closeModal = () => {
     setActiveModal(null);
@@ -44,10 +51,17 @@ function MainDashboardUI() {
     }
   };
 
-  useEffect(() => {
+useEffect(() => {
     axios.get("/expenses/summary")
       .then(res => {
-        setExpenseSummary(res.data.data || []);
+        const rawData = res.data.data || [];
+
+        const sanitized = rawData.map(item => ({
+          ...item,
+          category: DOMPurify.sanitize(item.category),
+        }));
+
+        setExpenseSummary(sanitized);
       })
       .catch(err => {
         console.error("소비 요약 조회 실패:", err);

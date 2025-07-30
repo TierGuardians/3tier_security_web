@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from '../config/axiosConfig'; 
 import { useNavigate } from 'react-router-dom';
+import DOMPurify from 'dompurify';
+
 
 function SignupPage() {
     const [userId, setUserId] = useState("");
@@ -11,12 +13,14 @@ function SignupPage() {
 
     const handleSignup = async () => {
         try {
-            const response = await axios.post('/users/signup', {
-                userId,
-                password,
-                name,
-                email
-            });
+            const sanitizedData = {
+                userId: DOMPurify.sanitize(userId),
+                password: password, // 비밀번호는 그대로 전송
+                name: DOMPurify.sanitize(name),
+                email: DOMPurify.sanitize(email)
+            };
+
+            const response = await axios.post('/users/signup', sanitizedData);
 
             alert(response.data.message || "회원가입 완료");
             navigate("/");
