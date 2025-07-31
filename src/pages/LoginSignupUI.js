@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SignupPage from "./Signuppage";
 import styles from "./LoginSignupUI.module.css";
@@ -12,53 +12,41 @@ function LoginSignupUI() {
   const [password, setPassword] = useState("");
   const [showSignupModal, setShowSignupModal] = useState(false);
 
-  useEffect(() => {
-    const fetchCsrfToken = async () => {
-      try {
-        const response = await axios.get("/users/csrf");
-        console.log("CSRF 응답 헤더:", response.headers);
-        const tokenFromHeader = response.headers["x-csrf-token"];
-        if (tokenFromHeader) {
-          sessionStorage.setItem("csrfToken", tokenFromHeader);
-        }
-      } catch (err) {
-        console.error("CSRF 토큰 요청 실패", err);
-      }
-    };
-    fetchCsrfToken();
-  }, []);
 
-
-   const handleLogin = async () => {
-    // ✅ 로그인 요청 전 sanitize
+const handleLogin = async () => {
+  try {
     const cleanUserId = DOMPurify.sanitize(userId);
     const cleanPassword = DOMPurify.sanitize(password);
 
-    try {
-      console.log("로그인 응답:");
-      const response = await axios.post("/users/login", {
-        userId: cleanUserId,
-        password: cleanPassword,
-      }); 
-      console.log("로그인 응답:", response);
+    const response = await axios.post("/users/login", {
+      userId: cleanUserId,
+      password: cleanPassword,
+    });
 
-      const { success, code, message, data } = response.data;
+    console.log("✅ 로그인 응답:", response);
 
-      if (success && code === 200 && data?.accessToken && data?.refreshToken) {
-        alert(message || "로그인 성공");
-        navigate("/dashboard");
+    const { success, code, message, data } = response.data;
+
+    if (success && code === 200) {
+      // ✅ CSRF 토큰 저장
+      if (data && data.csrfToken) {
+        sessionStorage.setItem("csrfToken", data.csrfToken);
+        console.log("✅ CSRF 토큰 저장됨:", data.csrfToken);
       } else {
-        alert("로그인 응답이 올바르지 않습니다.");
+        console.warn("⚠️ CSRF 토큰이 응답에 없음");
       }
-    } catch (error) {
-      if (error.response?.data?.message) {
-        alert(error.response.data.message);
-      } else {
-        alert("로그인 중 오류 발생");
-      }
+
+      alert(message || "로그인 성공");
+      navigate("/dashboard");
+    } else {
+      alert("로그인 응답이 올바르지 않습니다.");
     }
-  };
 
+  } catch (err) {
+    console.error("❌ 로그인 실패:", err);
+    alert(err.response?.data?.message || "로그인 중 오류 발생");
+  }
+};
   const handleSignupRedirect = () => {
     setShowSignupModal(true);
   };

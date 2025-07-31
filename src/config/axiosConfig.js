@@ -6,7 +6,7 @@ const instance = axios.create({
   headers: {
     "Content-Type": "application/json"
   },
-  withCredentials:true,
+  withCredentials: true
 });
 
 
@@ -14,7 +14,7 @@ instance.interceptors.request.use(
   (config) => {
     const csrfToken = sessionStorage.getItem('csrfToken');
     if (csrfToken) {
-      config.headers["X-XSRF-TOKEN"] = csrfToken;
+      config.headers["X-CSRF-TOKEN"] = csrfToken;
     }
     return config;
   },
