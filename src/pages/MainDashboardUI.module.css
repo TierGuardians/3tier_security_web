@@ -53,8 +53,8 @@
   border-radius: 12px;
   max-width: 800px;
   width: 90%;
-  max-height: 90vh; /* 🔥 핵심! */
-  overflow-y: auto;  /* 🔥 핵심! */
+  max-height: 90vh; 
+  overflow-y: auto;  
   position: relative;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.25);
 }

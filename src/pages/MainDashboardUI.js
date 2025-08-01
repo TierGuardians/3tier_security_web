@@ -1,8 +1,6 @@
-// MainDashboardUI.js + 간단한 소비 내역 그래프 시각화 추가
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Container, Button, Card } from "react-bootstrap";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import {  Button, Card } from "react-bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import styles from "./MainDashboardUI.module.css";
 
@@ -12,19 +10,16 @@ import ExpensePage from "./Expensepage";
 import MyinfoPage from "./Myinfopage";
 
 import axios from "../config/axiosConfig";
-import DOMPurify from 'dompurify';
-
 
 
 function MainDashboardUI() {
   const navigate = useNavigate();
   const [activeModal, setActiveModal] = useState(null);
-  const [expenseSummary, setExpenseSummary] = useState([]);
 
 const handleLogout = async () => {
   try {
-    await axios.post("/users/logout"); // ✅ 로그아웃 요청
-    sessionStorage.removeItem("csrfToken"); // CSRF 토큰도 정리
+    await axios.post("/users/logout"); 
+    sessionStorage.removeItem("csrfToken"); 
     navigate("/");
   } catch (error) {
     console.error("로그아웃 실패:", error);
@@ -51,27 +46,6 @@ const handleLogout = async () => {
     }
   };
 
-useEffect(() => {
-    axios.get("/expenses/summary")
-      .then(res => {
-        const rawData = res.data.data || [];
-
-        const sanitized = rawData.map(item => ({
-          ...item,
-          category: DOMPurify.sanitize(item.category),
-        }));
-
-        setExpenseSummary(sanitized);
-      })
-      .catch(err => {
-        console.error("소비 요약 조회 실패:", err);
-        if (err.response?.status === 401) {
-          alert("세션이 만료되었습니다. 다시 로그인해주세요.");
-          handleLogout();
-        }
-      });
-  }, []);
-
   return (
     <div className={styles.fullBackground}>
       <Card className={`shadow-lg text-center ${styles.dashboardCard}`}>
@@ -79,22 +53,6 @@ useEffect(() => {
           <i className="bi bi-graph-up-arrow text-danger me-2"></i>
           <span className={styles.title}>개인 금융 관리 시스템</span>
         </h1>
-
-        <p className="text-muted mb-4">예산, 자산, 소비 내역을 한눈에 관리하세요.</p>
-
-        {expenseSummary.length > 0 && (
-          <div style={{ width: "100%", height: 240 }} className="mb-4">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={expenseSummary} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="category" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="total" fill="#1976d2" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        )}
 
         <div className="d-grid gap-3">
           <Button className={styles.menuButton} onClick={() => setActiveModal("budget")}>월 예산 관리</Button>
