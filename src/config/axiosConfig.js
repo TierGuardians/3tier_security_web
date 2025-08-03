@@ -4,15 +4,14 @@ import axios from "axios";
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_URL, // 환경변수 사용
   headers: {
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
   },
-  withCredentials: true
+  withCredentials: true,
 });
-
 
 instance.interceptors.request.use(
   (config) => {
-    const csrfToken = sessionStorage.getItem('csrfToken');
+    const csrfToken = sessionStorage.getItem("csrfToken");
     if (csrfToken) {
       config.headers["X-CSRF-TOKEN"] = csrfToken;
     }

@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import axios from "../config/axiosConfig"; // 인터셉터 axios 사용
-import { assetTypes } from "../config/assetTypes";
+import axios from "../../config/axiosConfig"; // 인터셉터 axios 사용
+import { assetTypes } from "../../config/assetTypes";
 import DOMPurify from "dompurify";
-
 
 function AssetPage() {
   const [assets, setAssets] = useState([]);
@@ -12,13 +11,14 @@ function AssetPage() {
 
   const toggleAssets = () => {
     if (!showAssets) {
-      axios.get("/assets")
-        .then(res => {
+      axios
+        .get("/assets")
+        .then((res) => {
           setAssets(res.data.data);
           setIsEditMode(false);
           setShowAssets(true);
         })
-        .catch(err => console.error("자산 조회 실패:", err));
+        .catch((err) => console.error("자산 조회 실패:", err));
     } else {
       setShowAssets(false);
       setIsEditMode(false);
@@ -29,46 +29,51 @@ function AssetPage() {
 
   const handleAssetChange = (index, field, value) => {
     const updated = [...assets];
-    updated[index][field] = field === 'amount' ? Number(value) : value;
+    updated[index][field] = field === "amount" ? Number(value) : value;
     setAssets(updated);
   };
 
-const saveAssetChanges = (id, asset) => {
+  const saveAssetChanges = (id, asset) => {
     const sanitized = {
       name: DOMPurify.sanitize(asset.name),
       type: DOMPurify.sanitize(asset.type),
-      amount: asset.amount
+      amount: asset.amount,
     };
 
-    axios.put(`/assets/${id}`, sanitized)
+    axios
+      .put(`/assets/${id}`, sanitized)
       .then(() => {
         alert("수정 완료");
         toggleAssets();
       })
-      .catch(err => console.error("수정 실패:", err));
+      .catch((err) => console.error("수정 실패:", err));
   };
 
   const handleDelete = (id) => {
-    axios.delete(`/assets/${id}`)
+    axios
+      .delete(`/assets/${id}`)
       .then(() => {
         alert("삭제 완료");
         toggleAssets();
-      }).catch(err => console.error("삭제 실패:", err));
+      })
+      .catch((err) => console.error("삭제 실패:", err));
   };
 
- const addAsset = () => {
+  const addAsset = () => {
     const sanitized = {
       name: DOMPurify.sanitize(newAsset.name),
       type: DOMPurify.sanitize(newAsset.type),
-      amount: newAsset.amount
+      amount: newAsset.amount,
     };
 
-    axios.post("/assets", sanitized)
+    axios
+      .post("/assets", sanitized)
       .then(() => {
         alert("추가 완료");
         setNewAsset({ name: "", type: "", amount: 0 });
         toggleAssets();
-      }).catch(err => console.error("추가 실패:", err));
+      })
+      .catch((err) => console.error("추가 실패:", err));
   };
 
   return (
@@ -79,12 +84,14 @@ const saveAssetChanges = (id, asset) => {
         <button className="btn btn-primary me-2" onClick={toggleAssets}>
           {showAssets ? "자산 숨기기" : "자산 조회"}
         </button>
-        {showAssets && !isEditMode &&
-          <button className="btn btn-secondary" onClick={enableEditMode}>자산 수정</button>
-        }
+        {showAssets && !isEditMode && (
+          <button className="btn btn-secondary" onClick={enableEditMode}>
+            자산 수정
+          </button>
+        )}
       </div>
 
-      {showAssets &&
+      {showAssets && (
         <>
           <table className="table">
             <thead>
@@ -99,18 +106,29 @@ const saveAssetChanges = (id, asset) => {
               {assets.map((asset, idx) => (
                 <tr key={asset.id}>
                   <td>
-                    {isEditMode ?
-                      <input value={asset.name} onChange={e => handleAssetChange(idx, 'name', e.target.value)} />
-                      : asset.name}
+                    {isEditMode ? (
+                      <input
+                        value={asset.name}
+                        onChange={(e) =>
+                          handleAssetChange(idx, "name", e.target.value)
+                        }
+                      />
+                    ) : (
+                      asset.name
+                    )}
                   </td>
                   <td>
                     {isEditMode ? (
                       <select
                         value={asset.type}
-                        onChange={e => handleAssetChange(idx, 'type', e.target.value)}
+                        onChange={(e) =>
+                          handleAssetChange(idx, "type", e.target.value)
+                        }
                       >
-                        {assetTypes.map(type => (
-                          <option key={type} value={type}>{type}</option>
+                        {assetTypes.map((type) => (
+                          <option key={type} value={type}>
+                            {type}
+                          </option>
                         ))}
                         {!assetTypes.includes(asset.type) && (
                           <option value={asset.type}>{asset.type}</option>
@@ -121,25 +139,40 @@ const saveAssetChanges = (id, asset) => {
                     )}
                   </td>
                   <td>
-                    {isEditMode ?
+                    {isEditMode ? (
                       <input
                         type="number"
                         value={asset.amount}
-                        onChange={e => handleAssetChange(idx, 'amount', e.target.value)}
+                        onChange={(e) =>
+                          handleAssetChange(idx, "amount", e.target.value)
+                        }
                       />
-                      : asset.amount.toLocaleString()}
+                    ) : (
+                      asset.amount.toLocaleString()
+                    )}
                   </td>
-                  {isEditMode &&
+                  {isEditMode && (
                     <td>
-                      <button className="btn btn-sm btn-success me-1" onClick={() => saveAssetChanges(asset.id, asset)}>저장</button>
-                      <button className="btn btn-sm btn-danger" onClick={() => handleDelete(asset.id)}>삭제</button>
-                    </td>}
+                      <button
+                        className="btn btn-sm btn-success me-1"
+                        onClick={() => saveAssetChanges(asset.id, asset)}
+                      >
+                        저장
+                      </button>
+                      <button
+                        className="btn btn-sm btn-danger"
+                        onClick={() => handleDelete(asset.id)}
+                      >
+                        삭제
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
           </table>
 
-          {isEditMode &&
+          {isEditMode && (
             <div className="mt-4">
               <h4>신규 자산 추가</h4>
 
@@ -147,20 +180,30 @@ const saveAssetChanges = (id, asset) => {
                 className="form-control mb-2"
                 placeholder="이름"
                 value={newAsset.name}
-                onChange={e => setNewAsset({ ...newAsset, name: e.target.value })}
+                onChange={(e) =>
+                  setNewAsset({ ...newAsset, name: e.target.value })
+                }
               />
 
               <div className="mb-2">
-                <label className="form-label">자산 종류 (선택 또는 직접 입력)</label>
+                <label className="form-label">
+                  자산 종류 (선택 또는 직접 입력)
+                </label>
                 <div className="d-flex gap-2">
                   <select
                     className="form-select"
-                    value={assetTypes.includes(newAsset.type) ? newAsset.type : ""}
-                    onChange={e => setNewAsset({ ...newAsset, type: e.target.value })}
+                    value={
+                      assetTypes.includes(newAsset.type) ? newAsset.type : ""
+                    }
+                    onChange={(e) =>
+                      setNewAsset({ ...newAsset, type: e.target.value })
+                    }
                   >
                     <option value="">-- 자산 종류 선택 --</option>
-                    {assetTypes.map(type => (
-                      <option key={type} value={type}>{type}</option>
+                    {assetTypes.map((type) => (
+                      <option key={type} value={type}>
+                        {type}
+                      </option>
                     ))}
                   </select>
 
@@ -169,7 +212,9 @@ const saveAssetChanges = (id, asset) => {
                     className="form-control"
                     placeholder="직접 입력"
                     value={newAsset.type}
-                    onChange={e => setNewAsset({ ...newAsset, type: e.target.value })}
+                    onChange={(e) =>
+                      setNewAsset({ ...newAsset, type: e.target.value })
+                    }
                   />
                 </div>
               </div>
@@ -184,17 +229,22 @@ const saveAssetChanges = (id, asset) => {
                     setNewAsset({ ...newAsset, amount: "" });
                   }
                 }}
-                onChange={e => {
+                onChange={(e) => {
                   const val = e.target.value;
-                  setNewAsset({ ...newAsset, amount: val === "" ? 0 : Number(val) });
+                  setNewAsset({
+                    ...newAsset,
+                    amount: val === "" ? 0 : Number(val),
+                  });
                 }}
               />
 
-              <button className="btn btn-primary" onClick={addAsset}>자산 추가</button>
+              <button className="btn btn-primary" onClick={addAsset}>
+                자산 추가
+              </button>
             </div>
-          }
+          )}
         </>
-      }
+      )}
     </div>
   );
 }

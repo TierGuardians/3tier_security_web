@@ -1,13 +1,13 @@
-import 'bootstrap-icons/font/bootstrap-icons.css';
+import "bootstrap-icons/font/bootstrap-icons.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LoginSignupUI from "./pages/LoginSignupUI";
-import SignupPage from "./pages/Signuppage";
-import MainDashboardUI from "./pages/MainDashboardUI";
-import AssetPage from "./pages/Assetpage";
-import BudgetPage from "./pages/Budgetpage";
-import ExpensePage from "./pages/Expensepage";
-import MyinfoPage from "./pages/Myinfopage";
-
+import LoginSignupUI from "./pages/feature/LoginSignupUI";
+import SignupPage from "./pages/feature/Signuppage";
+import MainDashboardUI from "./pages/feature/MainDashboardUI";
+import AssetPage from "./pages/feature/Assetpage";
+import BudgetPage from "./pages/feature/Budgetpage";
+import ExpensePage from "./pages/feature/Expensepage";
+import MyinfoPage from "./pages/feature/Myinfopage";
+import XssDemo from "./pages/feature/demo";
 
 function App() {
   return (
@@ -26,6 +26,3 @@ function App() {
 }
 
 export default App;
-
-
-
