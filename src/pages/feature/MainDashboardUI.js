@@ -49,7 +49,6 @@ function MainDashboardUI() {
 
     const [userName, setUserName] = useState("");
 
-
     useEffect(() => {
       const fetchUserInfo = async () => {
         try {
@@ -63,6 +62,31 @@ function MainDashboardUI() {
 
       fetchUserInfo();
     }, []);
+
+    const [summary, setSummary] = useState({ asset: 0, expense: 0, budget: 0 });
+    useEffect(() => {
+    const fetchSummary = async () => {
+      try {
+        const [assetRes, expenseRes, budgetRes] = await Promise.all([
+          axios.get("/assets/total"),
+          axios.get("/expenses/monthly-total"),
+          axios.get("/budgets/monthly-total"),
+        ]);
+        setSummary({
+          asset: assetRes.data.data || 0,
+          expense: expenseRes.data.data || 0,
+          budget: budgetRes.data.data || 0,
+        });
+      } catch (err) {
+        console.error("요약 정보 로딩 실패:", err);
+      }
+    };
+    fetchSummary();
+  }, []);
+
+  const formatCurrency = (amount) => {
+    return "₩" + Number(amount).toLocaleString();
+  };
 
 
   return (
@@ -114,7 +138,23 @@ function MainDashboardUI() {
             {userName ? `${userName}님, 안녕하세요 👋` : "환영합니다 👋"}
           </span>
         </div>
-
+        <div className="d-flex justify-content-center gap-4 flex-wrap my-4">
+          <div className={`${styles.summaryCard} text-primary`}>
+            <i className="bi bi-wallet2 fs-2 mb-2"></i>
+            <div>총 자산</div>
+            <strong>{formatCurrency(summary.asset)}</strong>
+          </div>
+          <div className={`${styles.summaryCard} text-danger`}>
+            <i className="bi bi-journal-text fs-2 mb-2"></i>
+            <div>이번 달 소비</div>
+            <strong>{formatCurrency(summary.expense)}</strong>
+          </div>
+          <div className={`${styles.summaryCard} text-info`}>
+            <i className="bi bi-bullseye fs-2 mb-2"></i>
+            <div>이번 달 예산</div>
+            <strong>{formatCurrency(summary.budget)}</strong>
+          </div>
+        </div>
         <div className="d-flex justify-content-center flex-wrap gap-4 mt-4">
           <div
             className={`${styles.menuCard} ${
