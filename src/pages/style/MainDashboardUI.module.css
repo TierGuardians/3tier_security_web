@@ -1,3 +1,10 @@
+* {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #3a3a3a;
+}
+
 .fullBackground {
   background: linear-gradient(to right, #e3f2fd, #ffffff);
   min-height: 100vh;
@@ -57,4 +64,53 @@
   overflow-y: auto;
   position: relative;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.25);
+}
+
+
+.menuCard {
+  width: 100px;
+  height: 130px;
+  border-radius: 15px;
+  background-color: #f0f8ff;
+  color: #2c3e50;
+  text-align: center;
+  padding: 20px 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.menuCard:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  background-color: #d0eaff;
+}
+
+.menuCard i {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.menuCard div {
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.active {
+  background-color: #3399ff !important;
+  color: white !important;
+  border: 2px solid #007bff;
+  transform: scale(1.1);
+}
+
+.wideCard {
+  width: 330px; /* 100px * 3 + gap */
+}
+
+.username {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #3a3a3a;
 }

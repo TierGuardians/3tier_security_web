@@ -5,6 +5,7 @@ import styles from "../style/LoginSignupUI.module.css";
 import axios from "../../config/axiosConfig";
 import DOMPurify from "dompurify";
 import loginSchema from "../validation/loginSchema";
+import logo from "../../assets/logo.png";
 
 function LoginSignupUI() {
   const navigate = useNavigate();
@@ -38,10 +39,10 @@ function LoginSignupUI() {
           console.warn("CSRF 토큰이 응답에 없음");
         }
 
-        alert(message || "로그인 성공");
+        // alert(message || "로그인 성공");
         navigate("/dashboard");
       } else {
-        alert("로그인 응답이 올바르지 않습니다.");
+        // alert("로그인 응답이 올바르지 않습니다.");
       }
     } catch (err) {
       // ✅ yup 유효성 오류 메시지 처리
@@ -63,10 +64,23 @@ function LoginSignupUI() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>개인 금융 관리 시스템</div>
-
       <div className={styles["login-box"]}>
-        <h3 className={styles["login-title"]}>로그인</h3>
+        <div
+        className={styles.header}
+        style={{
+          transition: "transform 0.8s ease-in-out",
+          backgroundColor: "white",
+          color: "black",
+          animation: "pulseScale 2s infinite alternate"
+        }}
+      >
+        <img
+          src={logo}
+          alt="로고"
+          style={{ height: "60px", marginBottom:"50px",marginRight: "10px", verticalAlign: "middle" }}
+        />
+      </div>
+        <h3 className={styles["login-title"]}>Login</h3>
 
         <div className="mb-3">
           <label className="form-label">아이디</label>
@@ -75,7 +89,7 @@ function LoginSignupUI() {
             className="form-control"
             value={userId}
             onChange={(e) => setUserId(e.target.value)}
-            placeholder="아이디"
+            placeholder="ID"
           />
         </div>
 
@@ -86,7 +100,7 @@ function LoginSignupUI() {
             className="form-control"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="비밀번호"
+            placeholder="Password"
           />
         </div>
 
