@@ -34,7 +34,6 @@ function ExpensePage() {
           setIsEditMode(false);
           setShowExpenses(true);
         })
-        .catch((err) => console.error("소비 내역 조회 실패:", err));
     } else {
       setShowExpenses(false);
       setIsEditMode(false);
@@ -65,7 +64,6 @@ function ExpensePage() {
         alert("수정 완료");
         toggleExpenses();
       })
-      .catch((err) => console.error("수정 실패:", err));
   };
 
   const handleDelete = (id) => {
@@ -75,7 +73,6 @@ function ExpensePage() {
         alert("삭제 완료");
         toggleExpenses();
       })
-      .catch((err) => console.error("삭제 실패:", err));
   };
 
   const addExpense = () => {
@@ -96,7 +93,6 @@ function ExpensePage() {
         });
         toggleExpenses();
       })
-      .catch((err) => console.error("추가 실패:", err));
   };
 
   return (

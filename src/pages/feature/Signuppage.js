@@ -22,19 +22,18 @@ function SignupPage() {
 
     try {
       await signupSchema.validate(sanitizedData, { abortEarly: false });
-      setErrors({}); // 에러 초기화
+      setErrors({}); 
 
       const response = await axios.post("/users/signup", sanitizedData);
       alert(response.data.message || "회원가입 완료");
       navigate("/");
     } catch (err) {
       if (err.name === "ValidationError") {
-        // 필드별 에러 객체 생성
         const fieldErrors = {};
         err.inner.forEach((e) => {
           fieldErrors[e.path] = e.message;
         });
-        setErrors(fieldErrors); // 상태로 에러 저장
+        setErrors(fieldErrors); 
       } else {
         alert("회원가입 중 오류 발생");
       }

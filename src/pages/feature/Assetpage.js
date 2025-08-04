@@ -18,7 +18,6 @@ function AssetPage() {
           setIsEditMode(false);
           setShowAssets(true);
         })
-        .catch((err) => console.error("자산 조회 실패:", err));
     } else {
       setShowAssets(false);
       setIsEditMode(false);
@@ -46,7 +45,6 @@ function AssetPage() {
         alert("수정 완료");
         toggleAssets();
       })
-      .catch((err) => console.error("수정 실패:", err));
   };
 
   const handleDelete = (id) => {
@@ -56,7 +54,6 @@ function AssetPage() {
         alert("삭제 완료");
         toggleAssets();
       })
-      .catch((err) => console.error("삭제 실패:", err));
   };
 
   const addAsset = () => {
@@ -73,7 +70,6 @@ function AssetPage() {
         setNewAsset({ name: "", type: "", amount: 0 });
         toggleAssets();
       })
-      .catch((err) => console.error("추가 실패:", err));
   };
 
   return (

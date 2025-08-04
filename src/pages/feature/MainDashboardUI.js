@@ -24,7 +24,6 @@ function MainDashboardUI() {
       sessionStorage.removeItem("csrfToken");
       navigate("/");
     } catch (error) {
-      console.error("로그아웃 실패:", error);
       alert("로그아웃에 실패했습니다.");
     }
   };
@@ -51,13 +50,12 @@ function MainDashboardUI() {
     const [userName, setUserName] = useState("");
 
 
-    // 사용자 정보 가져오기
     useEffect(() => {
       const fetchUserInfo = async () => {
         try {
           const response = await axios.get("/users/mypage");
           const { user } = response.data.data;
-          setUserName(user.name); // 이름 저장
+          setUserName(user.name); 
         } catch (error) {
           console.error("사용자 정보 조회 실패:", error);
         }
@@ -67,31 +65,50 @@ function MainDashboardUI() {
     }, []);
 
 
-
   return (
     <div className={styles.fullBackground}>
       <Card className={`shadow-lg text-center ${styles.dashboardCard}`}>
-      
         <div
-        className={styles.header}
-        style={{
-          transition: "transform 0.8s ease-in-out",
-          backgroundColor: "white",
-          color: "black",
-          animation: "pulseScale 2s infinite alternate"
-        }}
-      >
-        <img
-          src={logo}
-          alt="로고"
-          style={{ height: "80px", marginBottom:"50px",marginRight: "10px", verticalAlign: "middle" }}
-        />
-      </div>
-        
-        {/* <h5 className="mb-3" >
-          <i className="bi bi-graph-up-arrow text-danger me-2"></i>
-          <span className={styles.title} >개인 금융 관리</span>
-        </h5> */}
+          className={styles.header}
+          style={{
+            transition: "transform 0.8s ease-in-out",
+            backgroundColor: "white",
+            color: "black",
+            animation: "pulseScale 2s infinite alternate",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              paddingTop: "1rem",
+              paddingBottom: "1rem",
+              userSelect: "none",
+              cursor: "default",
+            }}
+          >
+            <img
+              src={logo}
+              alt="로고"
+              draggable={false}
+              tabIndex={-1}
+              contentEditable={false}
+              className={styles.logoImage}
+              style={{
+                display: "block",
+                height: "80px",
+                margin: 0,
+                padding: 0,
+                border: "none",
+                userSelect: "none",
+                outline: "none",
+                cursor: "default",
+              }}
+            />
+          </div>
+        </div>
+
         <div className="text-end me-3 mb-2">
           <span className={styles.username}>
             {userName ? `${userName}님, 안녕하세요 👋` : "환영합니다 👋"}
@@ -100,35 +117,62 @@ function MainDashboardUI() {
 
         <div className="d-flex justify-content-center flex-wrap gap-4 mt-4">
           <div
-            className={`${styles.menuCard} ${activeModal === "budget" ? styles.active : ""}`}
+            className={`${styles.menuCard} ${
+              activeModal === "budget" ? styles.active : ""
+            }`}
             onClick={() => setActiveModal("budget")}
           >
-            <i className="bi bi-cash-coin mb-2 fs-2"></i>
-            <div>예산 관리</div>
+            <div style={{ display: "block", userSelect: "none", cursor: "default" }}>
+              <i className="bi bi-cash-coin mb-2 fs-2"></i>
+            </div>
+            <div style={{ display: "block", userSelect: "none", cursor: "default" }}>
+              예산 관리
+            </div>
           </div>
+
           <div
-            className={`${styles.menuCard} ${activeModal === "asset" ? styles.active : ""}`}
+            className={`${styles.menuCard} ${
+              activeModal === "asset" ? styles.active : ""
+            }`}
             onClick={() => setActiveModal("asset")}
           >
-            <i className="bi bi-piggy-bank mb-2 fs-2"></i>
-            <div>자산 관리</div>
+            <div style={{ display: "block", userSelect: "none", cursor: "default" }}>
+              <i className="bi bi-piggy-bank mb-2 fs-2"></i>
+            </div>
+            <div style={{ display: "block", userSelect: "none", cursor: "default" }}>
+              자산 관리
+            </div>
           </div>
+
           <div
-            className={`${styles.menuCard} ${activeModal === "expense" ? styles.active : ""}`}
+            className={`${styles.menuCard} ${
+              activeModal === "expense" ? styles.active : ""
+            }`}
             onClick={() => setActiveModal("expense")}
           >
-            <i className="bi bi-credit-card-2-front mb-2 fs-2"></i>
-            <div>소비 관리</div>
-          </div>
-          <div
-              className={`${styles.menuCard} ${styles.wideCard} ${activeModal === "myinfo" ? styles.active : ""}`}
-              onClick={() => setActiveModal("myinfo")}
-            >
-              <i className="bi bi-person-circle mb-2 fs-2"></i>
-              <div>내 정보</div>
+            <div style={{ display: "block", userSelect: "none", cursor: "default" }}>
+              <i className="bi bi-credit-card-2-front mb-2 fs-2"></i>
             </div>
+            <div style={{ display: "block", userSelect: "none", cursor: "default" }}>
+              소비 관리
+            </div>
+          </div>
+
+          <div
+            className={`${styles.menuCard} ${styles.wideCard} ${
+              activeModal === "myinfo" ? styles.active : ""
+            }`}
+            onClick={() => setActiveModal("myinfo")}
+          >
+            <div style={{ display: "block", userSelect: "none", cursor: "default" }}>
+              <i className="bi bi-person-circle mb-2 fs-2"></i>
+            </div>
+            <div style={{ display: "block", userSelect: "none", cursor: "default" }}>
+              내 정보
+            </div>
+          </div>
         </div>
-        
+
         <div className="mt-4 text-end">
           <button className="btn btn-outline-danger" onClick={handleLogout}>
             <i className="bi bi-box-arrow-right me-1 text-danger"></i>

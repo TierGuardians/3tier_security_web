@@ -12,44 +12,48 @@ function LoginSignupUI() {
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [showSignupModal, setShowSignupModal] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
+
+
 
   const handleLogin = async () => {
     try {
-      // ✅ yup 유효성 검사
       await loginSchema.validate({ userId, password }, { abortEarly: false });
+        setErrors({}); 
+        setTouched({ userId: true, password: true });
+
+
 
       const cleanUserId = DOMPurify.sanitize(userId);
       const cleanPassword = DOMPurify.sanitize(password);
 
-      // ✅ API 요청
       const response = await axios.post("/users/login", {
         userId: cleanUserId,
         password: cleanPassword,
       });
-
-      console.log("로그인 응답:", response);
 
       const { success, code, message, data } = response.data;
 
       if (success && code === 200) {
         if (data && data.csrfToken) {
           sessionStorage.setItem("csrfToken", data.csrfToken);
-          console.log("CSRF 토큰 저장됨:", data.csrfToken);
-        } else {
-          console.warn("CSRF 토큰이 응답에 없음");
         }
 
-        // alert(message || "로그인 성공");
+        alert(message || "로그인 성공");
         navigate("/dashboard");
       } else {
-        // alert("로그인 응답이 올바르지 않습니다.");
+        alert("로그인 응답이 올바르지 않습니다.");
       }
     } catch (err) {
-      // ✅ yup 유효성 오류 메시지 처리
       if (err.name === "ValidationError") {
-        alert(err.errors.join("\n"));
-      } else {
-        console.error("로그인 실패:", err);
+        const fieldErrors = {};
+        err.inner.forEach((e) => {
+          fieldErrors[e.path] = e.message;
+        });
+        setErrors(fieldErrors); 
+        setTouched({ userId: true, password: true });} 
+      else{
         alert(err.response?.data?.message || "로그인 중 오류 발생");
       }
     }
@@ -74,11 +78,33 @@ function LoginSignupUI() {
           animation: "pulseScale 2s infinite alternate"
         }}
       >
-        <img
-          src={logo}
-          alt="로고"
-          style={{ height: "60px", marginBottom:"50px",marginRight: "10px", verticalAlign: "middle" }}
-        />
+       <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "1rem 0",
+          userSelect: "none",
+          cursor: "default"
+       }}
+>
+    <img
+      src={logo}
+     alt="로고"
+      draggable={false}
+      tabIndex={-1}
+      contentEditable={false}
+      style={{
+        display: "block",           
+        height: "60px",
+        margin: 0,
+        padding: 0,
+        border: "none",
+        userSelect: "none",
+        cursor: "default"
+       }}
+       />
+      </div>
       </div>
         <h3 className={styles["login-title"]}>Login</h3>
 
@@ -89,8 +115,15 @@ function LoginSignupUI() {
             className="form-control"
             value={userId}
             onChange={(e) => setUserId(e.target.value)}
+            onBlur={() => setTouched({ ...touched, userId: true })}
+
             placeholder="ID"
           />
+         {touched.userId && errors.userId && (
+            <div style={{ fontSize: "0.875rem" }} className="text-danger">
+              {errors.userId}
+            </div>
+  )}
         </div>
 
         <div className="mb-3">
@@ -100,8 +133,15 @@ function LoginSignupUI() {
             className="form-control"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            onBlur={() => setTouched({ ...touched, password: true })}
+
             placeholder="Password"
           />
+       {touched.password && errors.password && (
+        <div style={{ fontSize: "0.875rem" }} className="text-danger">
+         {errors.password}
+        </div>
+  )}
         </div>
 
         <button

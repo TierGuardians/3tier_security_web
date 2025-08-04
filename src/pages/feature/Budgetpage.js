@@ -17,7 +17,6 @@ function BudgetPage() {
           setIsEditMode(false);
           setShowBudgets(true);
         })
-        .catch((err) => console.error("예산 조회 실패:", err));
     } else {
       setShowBudgets(false);
       setIsEditMode(false);
@@ -43,7 +42,6 @@ function BudgetPage() {
         alert("수정 완료");
         toggleBudgets();
       })
-      .catch((err) => console.error("수정 실패:", err));
   };
 
   const handleDelete = (id) => {
@@ -53,7 +51,6 @@ function BudgetPage() {
         alert("삭제 완료");
         toggleBudgets();
       })
-      .catch((err) => console.error("삭제 실패:", err));
   };
 
   const addBudget = () => {
@@ -67,7 +64,6 @@ function BudgetPage() {
         setNewBudget({ month: "", amount: 0 });
         toggleBudgets();
       })
-      .catch((err) => console.error("추가 실패:", err));
   };
 
   return (
