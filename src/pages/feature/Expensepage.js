@@ -92,6 +92,8 @@ function ExpensePage() {
           spentAt: "",
         });
         toggleExpenses();
+
+        window.location.reload();
       })
   };
 

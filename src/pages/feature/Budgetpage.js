@@ -63,6 +63,8 @@ function BudgetPage() {
         alert("예산 추가 완료");
         setNewBudget({ month: "", amount: 0 });
         toggleBudgets();
+        window.location.reload();
+
       })
   };
 

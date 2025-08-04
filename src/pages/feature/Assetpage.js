@@ -69,6 +69,8 @@ function AssetPage() {
         alert("추가 완료");
         setNewAsset({ name: "", type: "", amount: 0 });
         toggleAssets();
+        window.location.reload();
+
       })
   };
 
